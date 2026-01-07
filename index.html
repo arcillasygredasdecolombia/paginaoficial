@@ -1,0 +1,2079 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcillas y Gredas de Colombia | Catálogo 2026</title>
+    <meta name="description" content="Venta de arcillas naturales, insumos artísticos y materiales técnicos. Guías de uso y galería de inspiración.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js (Core) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js (GLTFLoader - Para cargar el modelo .glb) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Three.js (OrbitControls - Para mover el modelo con el mouse/tactil) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#B8860B', 
+                            clay: '#A16E53', 
+                            dark: '#2D2420', 
+                            earth: '#5D4037', 
+                            whatsapp: '#25D366',
+                            light: '#F9F9F9',
+                            sage: '#8FA89B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #2D2420;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Fondo especial */
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background-image: url('https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/arcillas-de-colores-monterregada.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* CAMBIO IMPORTANTE: Activamos pointer-events aquí para capturar el click/touch */
+            pointer-events: auto; 
+        }
+        
+        /* El canvas captura eventos táctiles y de mouse */
+        #canvas-container canvas {
+            pointer-events: auto; 
+            touch-action: none; /* Evita que el navegador haga scroll cuando tocas el modelo */
+            outline: none;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+            background: transparent;
+            flex: 1;
+            pointer-events: none; /* Dejamos pasar clicks a través de las secciones vacías */
+        }
+        
+        .content-layer > * {
+            pointer-events: auto; /* El contenido real (texto, botones) sí captura clicks */
+        }
+
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .nav-link {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #5D4037;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active { color: #A16E53; }
+
+        /* Submenu Sticky Style */
+        .submenu-sticky {
+            position: sticky;
+            top: 80px; /* Altura del navbar */
+            z-index: 40;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e5e7eb;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .submenu-item {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            color: #5D4037;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 99px;
+            transition: all 0.2s;
+            margin: 0 0.25rem;
+        }
+        .submenu-item:hover, .submenu-item.active {
+            background-color: #A16E53;
+            color: white;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+            background-color: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+        }
+
+        .text-colombia-flag {
+            background: linear-gradient(90deg, #FCD116 0%, #FCD116 33%, #003893 33%, #003893 66%, #CE1126 66%, #CE1126 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .page-section {
+            display: none;
+            padding-top: 100px;
+        }
+        .page-section.active { display: block; }
+        
+        #page-home.active { 
+            display: flex !important; 
+            padding-top: 80px;
+            min-height: 80vh;
+            align-items: center;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #eeeeee;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #A16E53;
+        }
+
+        /* ESTILOS DE BORDES EXCLUSIVOS (NUEVO) */
+        
+        /* 1. Borde Dorado para Catálogo y Menús */
+        .gold-border-card {
+            border: 1px solid #B8860B; /* Dorado base */
+            position: relative;
+            box-shadow: 0 10px 25px rgba(184, 134, 11, 0.15); /* Sombra dorada suave */
+        }
+        .gold-border-card::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            border: 1px solid rgba(184, 134, 11, 0.4); /* Línea interna sutil */
+            pointer-events: none;
+            border-radius: 2px;
+        }
+
+        /* 2. Marco Exclusivo para Imagen Principal de Producto */
+        .exclusive-product-frame {
+            border: 8px solid #fff; /* Marco blanco interno */
+            outline: 1px solid #B8860B; /* Línea dorada externa */
+            box-shadow: 0 0 0 4px #fff, 0 0 0 5px #B8860B, 0 20px 40px rgba(0,0,0,0.2); /* Doble borde + Sombra profunda */
+            transition: transform 0.3s ease;
+        }
+        .exclusive-product-frame:hover {
+            transform: scale(1.02);
+        }
+
+        /* 3. Marco para Galería (Centrado y Elegante) */
+        .gallery-gold-frame {
+            border: 1px solid #B8860B;
+            padding: 6px; /* Espacio blanco entre imagen y borde */
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .gallery-gold-frame:hover {
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.2);
+            border-color: #A16E53;
+        }
+        /* Fin Estilos Exclusivos */
+
+        /* Estilos Ficha Técnica */
+        .spec-card {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        @media (min-width: 768px) {
+            .spec-card {
+                flex-direction: row;
+            }
+        }
+        
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .spec-table tr td {
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.9rem;
+            color: #4b5563;
+            vertical-align: top;
+        }
+        .spec-table tr td:first-child {
+            font-weight: 700;
+            color: #A16E53;
+            width: 30%;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            padding-right: 1rem;
+        }
+
+        /* Tabla de Beneficios Específica */
+        .benefits-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+        .benefits-table th {
+            background-color: #f9f9f9;
+            color: #A16E53;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .benefits-table td {
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .section-header {
+            grid-column: 1 / -1;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Estilo para el Grid del Menú de Categoría - REDISEÑADO PARA ELEGANCIA Y CENTRADO */
+        .category-menu-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem; /* Espacio amplio entre cartas */
+            margin-top: 3rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 3rem;
+        }
+        .menu-card {
+            position: relative;
+            border-radius: 4px; /* Bordes sutiles */
+            overflow: hidden;
+            cursor: pointer;
+            width: 100%;
+            max-width: 380px; /* Ancho fijo elegante */
+            height: 550px; /* Formato vertical (Portrait) */
+            /* box-shadow removido aquí para usar el de .gold-border-card */
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            background-color: #000;
+        }
+        .menu-card:hover {
+            transform: translateY(-10px);
+            /* box-shadow manejado por hover en la clase nueva si es necesario */
+        }
+        .menu-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, opacity 0.5s ease;
+            opacity: 0.85; /* Un poco oscuro para resaltar texto */
+        }
+        .menu-card:hover img {
+            transform: scale(1.05);
+            opacity: 0.6; /* Más oscuro al hover */
+        }
+        .menu-card-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centrado vertical */
+            align-items: center; /* Centrado horizontal */
+            padding: 2rem;
+            z-index: 10;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+        }
+        .menu-card h3 {
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem; /* Título grande */
+            font-style: italic;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            transform: translateY(0);
+            transition: transform 0.5s ease;
+        }
+        .menu-card-btn {
+            color: #F9F9F9;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            padding: 1rem 2rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+            opacity: 0; /* Oculto inicialmente */
+            transform: translateY(20px);
+        }
+        .menu-card:hover .menu-card-btn {
+            opacity: 1;
+            transform: translateY(0);
+            background: #B8860B; /* Dorado al hover */
+            border-color: #B8860B;
+            color: #fff;
+        }
+
+        .card-info-table {
+            width: 100%;
+            font-size: 0.75rem;
+            border-collapse: collapse;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .card-info-table td {
+            padding: 4px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .card-info-table td:first-child {
+            font-weight: 700;
+            color: #9ca3af;
+            width: 40%;
+            text-transform: uppercase;
+            font-size: 0.65rem;
+        }
+        .card-info-table td:last-child {
+            color: #4b5563;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        img {
+            background-color: #f3f3f3;
+            transition: opacity 0.3s;
+        }
+        img::after {
+            content: "Imagen no disponible";
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            color: #999;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+        
+        .instruction-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #4a4a4a;
+        }
+        .instruction-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #A16E53;
+            font-weight: bold;
+        }
+        .instruction-list strong {
+            color: #2D2420;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="hero-bg"></div>
+    <!-- Canvas container para Three.js -->
+    <div id="canvas-container"></div>
+
+    <!-- Navegación Principal -->
+    <nav class="fixed w-full z-50 nav-glass transition-all duration-300 pointer-events-auto">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-4 cursor-pointer" onclick="navigateTo('home')">
+                    <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/2oro-logo-con-trasparencia.png" 
+                         onerror="this.src='https://raw.githubusercontent.com/instructorandradedcc/arcillasygredasdecolombia/main/2oro-logo%20con%20trasparencia.png'"
+                         alt="Logo" class="h-12 w-auto hover:scale-105 transition-transform">
+                    <div class="hidden md:block">
+                        <h1 class="font-serif text-xs tracking-widest text-brand-dark leading-none font-bold">ARCILLAS Y GREDAS</h1>
+                        <span class="text-[8px] tracking-[0.3em] uppercase block mt-1 font-bold">
+                            DE <span class="text-colombia-flag">COLOMBIA</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex space-x-8">
+                    <span onclick="navigateTo('home')" class="nav-link active" id="btn-home">Inicio</span>
+                    <span onclick="navigateTo('about')" class="nav-link" id="btn-about">Nosotros</span>
+                    <span onclick="navigateTo('products')" class="nav-link" id="btn-products">Catálogo</span>
+                    <span onclick="navigateTo('instructions')" class="nav-link" id="btn-instructions">Instrucciones</span>
+                    <span onclick="navigateTo('contact')" class="nav-link" id="btn-contact">Contacto</span>
+                </div>
+
+                <button id="mobile-menu-btn" class="md:hidden text-brand-dark"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 absolute w-full left-0 top-20 z-40 shadow-lg">
+            <div class="flex flex-col p-6 space-y-4 text-center">
+                <span onclick="navigateTo('home')" class="text-brand-dark font-bold py-2 uppercase text-xs">Inicio</span>
+                <span onclick="navigateTo('about')" class="text-brand-dark font-bold py-2 uppercase text-xs">Nosotros</span>
+                <span onclick="navigateTo('products')" class="text-brand-dark font-bold py-2 uppercase text-xs">Catálogo</span>
+                <span onclick="navigateTo('instructions')" class="text-brand-dark font-bold py-2 uppercase text-xs">Instrucciones</span>
+                <span onclick="navigateTo('contact')" class="text-brand-dark font-bold py-2 uppercase text-xs">Contacto</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Botón Flotante WhatsApp -->
+    <a href="https://wa.me/573136139989" target="_blank" class="floating-whatsapp" title="Cotizar por WhatsApp">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </a>
+
+    <!-- 1. INICIO -->
+    <section id="page-home" class="page-section active content-layer">
+        <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-2 gap-12 h-full items-center">
+            <div class="text-left animate-fade-in flex flex-col justify-center pt-10 md:pt-0 pointer-events-auto">
+                <div class="mb-6 flex items-center gap-3">
+                    <span class="h-px w-8 bg-brand-clay"></span>
+                    <span class="text-brand-clay text-xs font-mono tracking-widest uppercase font-bold">Tienda Oficial</span>
+                </div>
+                
+                <h1 class="font-serif italic text-5xl md:text-7xl font-bold text-brand-dark mb-6 leading-none">
+                    Minerales <br> Vivos
+                </h1>
+                <span class="text-xl md:text-2xl mt-2 block font-normal text-brand-earth tracking-widest uppercase mb-8">
+                    DE <span class="text-colombia-flag">COLOMBIA</span>
+                </span>
+                
+                <div class="mb-10 max-w-md border-l-4 border-brand-clay pl-4 bg-white/50 p-4 rounded backdrop-blur-sm">
+                    <p class="text-gray-600 text-sm md:text-base font-medium leading-relaxed">
+                        Descubre nuestra línea de arcillas y derivados.
+                    </p>
+                    <p class="font-serif text-2xl md:text-3xl text-brand-gold font-bold italic mt-2 tracking-wide">
+                        Premium Quality
+                    </p>
+                </div>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="navigateTo('products')" class="px-8 py-3 bg-white border-2 border-brand-clay text-brand-clay hover:bg-brand-clay hover:text-white transition-all uppercase tracking-widest text-xs font-bold rounded-sm">
+                        Ver Catálogo
+                    </button>
+                </div>
+            </div>
+            <!-- Espacio vacío donde se ve el modelo 3D -->
+            <div class="hidden md:block h-full w-full"></div>
+        </div>
+    </section>
+
+    <!-- 1.1 QUIENES SOMOS -->
+    <section id="page-about" class="page-section content-layer bg-white">
+        <div class="max-w-4xl mx-auto px-6 py-20 pointer-events-auto">
+            <div class="text-center mb-12">
+                <h2 class="font-serif text-4xl text-brand-dark mb-4">Quiénes Somos</h2>
+                <div class="w-16 h-px bg-brand-clay mx-auto"></div>
+            </div>
+            <div class="prose prose-lg mx-auto text-gray-600 text-justify leading-relaxed font-light">
+                <p class="mb-6">
+                    Somos una empresa colombiana con <strong class="text-brand-clay font-bold">más de 25 años de experiencia</strong>, especializada en la extracción, procesamiento y producción de arcillas de la más alta calidad, conservando su naturalidad, plasticidad y homogeneidad. Nuestros productos están libres de todo tipo de impurezas, como residuos vegetales, piedras, arenas, etc.
+                </p>
+                <p class="mb-6">
+                    Nuestros productos son de uso indispensable en colegios, jardines infantiles, universidades y todo tipo de establecimientos relacionados con el arte y la educación. Además, son fundamentales en terapias ocupacionales, ya que desarrollan y estimulan la motricidad fina, la creatividad y el talento.
+                </p>
+                <p class="mb-10 p-6 bg-brand-light border-l-4 border-brand-sage rounded-r-lg italic">
+                    Conoce nuestra línea de salud y belleza, <strong class="text-brand-dark">Natural Clay</strong>, arcilla en polvo pura y mascarillas 100% de arcilla para todo tipo de piel.
+                </p>
+
+                <div class="mb-12">
+                    <h3 class="font-serif text-2xl text-brand-dark mb-4 text-center">Misión</h3>
+                    <p class="text-center max-w-2xl mx-auto">
+                        Arcillas y Gredas de Colombia LTDA, se ha propuesto ejecutar la explotación, transformación y comercialización de arcilla como materia prima de excelente calidad, para toda clase de productos, aplicaciones y usos.
+                    </p>
+                </div>
+
+                <!-- Banner de Ventas -->
+                <div class="mt-12 bg-brand-dark text-white p-8 text-center rounded-xl shadow-lg transform hover:scale-[1.02] transition-transform">
+                    <h3 class="font-serif text-3xl text-brand-gold mb-2 tracking-wide">VENTAS AL POR MAYOR Y DETAL</h3>
+                    <p class="text-gray-300 text-sm uppercase tracking-widest">Envíos a todo el país • Calidad Garantizada</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. CATÁLOGO PRINCIPAL (LANDING DE PRODUCTOS) - AHORA CON BORDE DORADO -->
+    <section id="page-products" class="page-section content-layer bg-white/80">
+        <div class="max-w-7xl mx-auto px-6 pb-20 pointer-events-auto">
+            <div class="text-center mb-16 pt-10">
+                <h2 class="font-serif text-4xl text-brand-dark mb-2">Nuestras Categorías</h2>
+                <div class="w-16 h-px bg-brand-clay mx-auto mb-4"></div>
+                <p class="text-gray-500 text-sm">Selecciona una línea para explorar.</p>
+            </div>
+
+            <!-- GRID ACTUALIZADO A 2 COLUMNAS -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Card Belleza (Abre menú de categoría) - AÑADIDA CLASE gold-border-card -->
+                <div onclick="showSubCategory('belleza')" class="product-card gold-border-card group relative h-[450px] cursor-pointer">
+                    <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/set-de-arsillas-piel-organizados-conjunto.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90" alt="Belleza">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full text-center">
+                        <h3 class="text-3xl font-serif text-white mb-2">Belleza y Salud</h3>
+                        <p class="text-gray-300 text-xs mb-4">Mascarillas Listas con Flores & Polvos Puros.</p>
+                        <span class="text-brand-gold text-xs uppercase font-bold border-b border-brand-gold pb-1">Ver Variedades</span>
+                    </div>
+                </div>
+
+                <!-- Card Arte y Escolar (Actualizado) - AÑADIDA CLASE gold-border-card -->
+                <div onclick="showSubCategory('arte')" class="product-card gold-border-card group relative h-[450px] cursor-pointer">
+                    <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/arcillas-y-arenas-de-colores-y-plastilinas.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90" alt="Arte">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 w-full text-center">
+                        <h3 class="text-3xl font-serif text-white mb-2">Arte y Escolar</h3>
+                        <p class="text-gray-300 text-xs mb-4">Arcillas, Insumos Técnicos y Materiales.</p>
+                        <span class="text-brand-gold text-xs uppercase font-bold border-b border-brand-gold pb-1">Ver Todo el Catálogo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DETALLE (PRODUCTOS/SUBMENÚ) -->
+    <section id="page-detail" class="page-section content-layer bg-white">
+        <div class="max-w-7xl mx-auto px-6 pb-20 pt-10 pointer-events-auto">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="navigateTo('products')" class="flex items-center gap-2 text-gray-500 hover:text-brand-clay transition-colors text-xs uppercase font-bold">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver
+                </button>
+                <span class="h-4 w-px bg-gray-300"></span>
+                <span id="detail-title" class="text-brand-dark text-lg font-serif font-bold">Categoría</span>
+            </div>
+            
+            <div id="detail-content" class="w-full">
+                <!-- Se llenará dinámicamente con Grilla o Detalle -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. INSTRUCCIONES COMPLETAS -->
+    <section id="page-instructions" class="page-section content-layer bg-white">
+        <div class="max-w-6xl mx-auto px-6 pt-10 pb-20 pointer-events-auto">
+            <div class="text-center mb-16">
+                <i data-lucide="book-open" class="w-12 h-12 text-brand-clay mx-auto mb-4"></i>
+                <h2 class="font-serif text-4xl text-brand-dark mb-4">Manual de Uso Profesional</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Domina el arte de la arcilla con nuestras guías técnicas detalladas.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Horneado -->
+                <div class="bg-white border border-gray-200 rounded-xl p-8 shadow-xl">
+                    <div class="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
+                        <div class="p-3 bg-brand-clay/10 rounded-full text-brand-clay"><i data-lucide="flame" class="w-6 h-6"></i></div>
+                        <h3 class="text-2xl font-serif text-brand-dark font-bold">Horneado de Arcilla</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4 text-justify">
+                        Para hornear nuestra arcilla natural primero sécala al aire por días, luego precalienta un horno a baja temperatura (ej. 180°C/350°F), introduce la pieza en una bandeja, y cocina lentamente según el grosor (ej. 30-45 min por cada 0.6 cm), dejando enfriar dentro del horno para evitar grietas.
+                    </p>
+                    <div class="space-y-4 text-sm text-gray-700">
+                        <h4 class="font-bold text-brand-clay uppercase text-xs tracking-wider mt-4">1. Preparación</h4>
+                        <ul class="instruction-list pl-8">
+                            <li><strong>Secado al aire:</strong> Deja que la pieza se seque al aire libre por uno o varios días hasta que esté completamente seca y pálida.</li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-clay uppercase text-xs tracking-wider mt-4">2. Horneado (para arcilla ya seca al aire)</h4>
+                        <ul class="instruction-list pl-8">
+                            <li><strong>Precalienta el horno:</strong> Ponlo a 180°C (350°F) y deja que alcance la temperatura.</li>
+                            <li><strong>Coloca la pieza:</strong> Ponla en una bandeja a temperatura ambiente, a media altura, para que se caliente gradualmente con el horno.</li>
+                            <li><strong>Tiempo:</strong> Hornea de 30 a 45 minutos por cada 0.6 cm (1/4 de pulgada) de grosor.</li>
+                            <li><strong>Enfriamiento:</strong> Apaga el horno y deja que la pieza se enfríe completamente dentro, sin sacarla. Un cambio brusco de temperatura puede romperla.</li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-clay uppercase text-xs tracking-wider mt-4">Consejos clave:</h4>
+                        <p class="mb-2">La clave es la paciencia; aumentar la temperatura lentamente previene grietas y roturas.</p>
+                        <ul class="instruction-list pl-8">
+                            <li><strong>Temperatura constante:</strong> Usa un termómetro de horno para verificar la temperatura real, ya que puede variar, y evita que la pieza toque directamente los elementos calientes como resistencias paredes etc.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Moldeado -->
+                <div class="bg-white border border-gray-200 rounded-xl p-8 shadow-xl">
+                    <div class="flex items-center gap-4 mb-6 border-b border-gray-100 pb-4">
+                        <div class="p-3 bg-brand-gold/10 rounded-full text-brand-gold"><i data-lucide="hand" class="w-6 h-6"></i></div>
+                        <h3 class="text-2xl font-serif text-brand-dark font-bold">Instrucciones de Moldeado</h3>
+                    </div>
+                    <div class="space-y-4 text-sm text-gray-700">
+                        <p><strong>Humedece:</strong> Ten agua a mano. Si la arcilla se pone dura, humedece ligeramente tus manos o la pieza, pero no la satures de agua.</p>
+                        
+                        <h4 class="font-bold text-brand-clay uppercase text-xs tracking-wider mt-4">Técnicas de modelado</h4>
+                        <ul class="instruction-list pl-8">
+                            <li><strong>Técnica de pellizco (para cuencos):</strong> Haz una bola, introduce el pulgar en el centro sin atravesarla y pellizca suavemente los bordes mientras giras la pieza para uniformar el espesor de las paredes.</li>
+                            <li><strong>Unión de piezas:</strong> Raya las superficies a unir y aplica barbotina (arcilla mezclada con agua) para que se adhieran bien y no se despeguen al secar, asegurando que ambas partes tengan humedad similar.</li>
+                            <li><strong>Soporte:</strong> Para piezas grandes, usa un soporte rígido cubierto con tela o papel para evitar grietas por contracción.</li>
+                            <li><strong>Herramientas:</strong> Usa tus dedos para alisar o herramientas como estiletes, pinceles.</li>
+                        </ul>
+
+                        <h4 class="font-bold text-brand-clay uppercase text-xs tracking-wider mt-4">Acabado y secado</h4>
+                        <ul class="instruction-list pl-8">
+                            <li><strong>Alisado:</strong> Usa los dedos húmedos o una esponja para alisar grietas o imperfecciones.</li>
+                            <li><strong>Secado:</strong> Guarda la pieza envuelta en plástico húmedo y un trapo para que seque lentamente y de manera uniforme, previniendo grietas.</li>
+                            <li><strong>Decoración:</strong> Una vez seca, puedes pulir, tallar o decorar con nuestros esmaltes acrílicos (Decorartes).</li>
+                            <li><strong>Cocción (opcional):</strong> Para una pieza permanente, se puede hornear en un horno.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. CONTACTO (REDDISEÑADO) -->
+    <section id="page-contact" class="page-section content-layer bg-white">
+        <div class="max-w-3xl mx-auto px-6 pt-10 pb-20 pointer-events-auto">
+            
+            <div class="bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden relative">
+                <!-- Franja decorativa superior -->
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand-gold via-brand-clay to-brand-dark"></div>
+
+                <div class="p-8 md:p-12 text-center">
+                    
+                    <!-- Encabezado Centrado -->
+                    <div class="mb-10">
+                        <span class="text-brand-clay uppercase text-xs font-bold tracking-[0.2em] mb-2 block">Estamos aquí para ayudarte</span>
+                        <h2 class="font-serif text-4xl text-brand-dark mb-6 font-bold">Contáctanos</h2>
+                        
+                        <!-- Bloque de Contacto Unificado -->
+                        <div class="flex flex-col md:flex-row justify-center items-center gap-6 text-sm text-gray-600 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <a href="https://wa.me/573136139989" target="_blank" class="flex items-center gap-3 hover:scale-105 transition-transform cursor-pointer">
+                                <div class="p-2 bg-white shadow-sm rounded-full text-brand-whatsapp"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                                <span class="font-mono font-bold text-brand-dark hover:text-brand-whatsapp transition-colors">+57 313 613 9989</span>
+                            </a>
+                            <div class="hidden md:block w-px h-6 bg-gray-300"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-white shadow-sm rounded-full text-brand-clay"><i data-lucide="mail" class="w-5 h-5"></i></div>
+                                <a href="mailto:Arcillasygredas@gmail.com" class="hover:text-brand-clay transition-colors">Arcillasygredas@gmail.com</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulario Centrado -->
+                    <form action="mailto:Arcillasygredas@gmail.com" method="post" enctype="text/plain" class="space-y-4 max-w-lg mx-auto text-left">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Nombre</label>
+                                <input type="text" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm outline-none focus:border-brand-clay focus:ring-1 focus:ring-brand-clay transition-all" placeholder="Tu nombre">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Teléfono</label>
+                                <input type="tel" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm outline-none focus:border-brand-clay focus:ring-1 focus:ring-brand-clay transition-all" placeholder="Tu contacto">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mensaje</label>
+                            <textarea rows="4" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-lg text-sm outline-none focus:border-brand-clay focus:ring-1 focus:ring-brand-clay transition-all" placeholder="¿En qué podemos ayudarte hoy?"></textarea>
+                        </div>
+
+                        <button class="w-full bg-brand-dark hover:bg-brand-clay text-white py-4 rounded-lg font-bold text-xs uppercase tracking-widest transition-colors shadow-lg mt-4">
+                            Enviar Mensaje
+                        </button>
+                    </form>
+
+                    <!-- Redes Sociales Integradas abajo -->
+                    <div class="mt-12 pt-8 border-t border-gray-100">
+                        <p class="text-xs text-gray-400 uppercase font-bold tracking-widest mb-6">Síguenos en nuestras redes</p>
+                        <div class="flex justify-center items-start gap-8 flex-wrap">
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com/arcillacolombia" target="_blank" class="flex flex-col items-center gap-2 group">
+                                <div class="p-4 bg-gray-50 group-hover:bg-brand-dark group-hover:text-white rounded-full text-gray-600 transition-all shadow-sm">
+                                    <i data-lucide="facebook" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold text-gray-400 group-hover:text-brand-clay transition-colors tracking-wide">@arcillacolombia</span>
+                            </a>
+
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com/arcillacolombia" target="_blank" class="flex flex-col items-center gap-2 group">
+                                <div class="p-4 bg-gray-50 group-hover:bg-brand-dark group-hover:text-white rounded-full text-gray-600 transition-all shadow-sm">
+                                    <i data-lucide="instagram" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold text-gray-400 group-hover:text-brand-clay transition-colors tracking-wide">@arcillacolombia</span>
+                            </a>
+
+                            <!-- X (Twitter) -->
+                            <a href="https://x.com/arcillacolombia" target="_blank" class="flex flex-col items-center gap-2 group">
+                                <div class="p-4 bg-gray-50 group-hover:bg-brand-dark group-hover:text-white rounded-full text-gray-600 transition-all shadow-sm">
+                                    <!-- Logo SVG de X -->
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold text-gray-400 group-hover:text-brand-clay transition-colors tracking-wide">@arcillacolombia</span>
+                            </a>
+
+                            <!-- TikTok -->
+                            <a href="https://www.tiktok.com/@arcillacolombia" target="_blank" class="flex flex-col items-center gap-2 group">
+                                <div class="p-4 bg-gray-50 group-hover:bg-brand-dark group-hover:text-white rounded-full text-gray-600 transition-all shadow-sm">
+                                    <!-- Logo SVG de TikTok -->
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v6.16c0 3.13-1.3 6.11-3.64 8.01-2.09 1.7-4.8 2.63-7.54 2.4-4.11-.35-7.66-3.12-8.99-7-1.1-3.21-.52-6.9 1.75-9.6 2.05-2.45 5.26-3.76 8.44-3.41v4.32c-1.35-.15-2.73.19-3.83.99-1.38 1.01-2.07 2.77-1.82 4.46.25 1.69 1.5 3.13 3.13 3.6 1.64.47 3.42.06 4.7-1.12.83-.77 1.28-1.86 1.28-2.98V.02h2.5z"/></svg>
+                                </div>
+                                <span class="text-[10px] uppercase font-bold text-gray-400 group-hover:text-brand-clay transition-colors tracking-wide">@arcillacolombia</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white py-8 border-t border-gray-800 content-layer mt-auto pointer-events-auto">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-xs text-gray-500 uppercase tracking-widest mb-2">&copy; 2026 Arcillas y Gredas de Colombia.</p>
+            <div class="flex flex-col items-center justify-center gap-2 mt-4">
+                <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/marca-colombia-logo.png" 
+                     alt="Marca Colombia" 
+                     class="h-16 w-auto opacity-70 hover:opacity-100 transition-opacity">
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        lucide.createIcons();
+        
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            window.scrollTo(0,0);
+            menu.classList.add('hidden');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-${pageId}`);
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        const IMG_BASE = "https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/";
+
+        function buildImgUrl(filename) {
+            if (filename.includes('.')) return IMG_BASE + filename;
+            return IMG_BASE + filename + ".jpg";
+        }
+
+        const TABLE_DATA = `
+            <table class="benefits-table">
+                <thead>
+                    <tr>
+                        <th>Tipo De Arcilla</th>
+                        <th>Tipo de Piel</th>
+                        <th>Beneficios Y Propiedades</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold">Blanca</td>
+                        <td>Seca / Sensible</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Elimina barritos, puntos negros y células muertas.</li>
+                                <li>Regenera, tonifica, humecta y suaviza.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Amarilla</td>
+                        <td>Mixta / Cansada</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Elimina signos de edad y fatiga.</li>
+                                <li>Estimula colágeno y reafirma.</li>
+                                <li>Quita manchas.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Roja</td>
+                        <td>Normal / Madura</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Regenera, antiséptica y astringente.</li>
+                                <li>Mejora circulación y vitalidad.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Uva</td>
+                        <td>Sensible / Joven</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Regenera elastina.</li>
+                                <li>Antioxidante potente.</li>
+                                <li>Exfolia e ilumina.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Verde</td>
+                        <td>Mixta / Grasa</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Depura capas profundas.</li>
+                                <li>Desinflama y desinfecta (Acné).</li>
+                                <li>Estimula limpieza linfática.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold">Azul</td>
+                        <td>Grasa</td>
+                        <td>
+                            <ul class="list-disc pl-4">
+                                <li>Reduce grasa facial.</li>
+                                <li>Aporta luminosidad.</li>
+                                <li>Remueve caspa en cuero cabelludo.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+
+        // --- DATOS CATALOGO ---
+        const catalog = {
+            belleza: {
+                mainHeader: {
+                    title: "Belleza y Salud",
+                    subtitle: "Minerales Vivos de Colombia para tu Piel",
+                    img: "set-de-arsillas-piel-organizados-conjunto.jpg"
+                },
+                products: [
+                    {
+                        id: "mascarillas",
+                        title: "Mascarillas Listas (crema)",
+                        thumb: "arcilla-piel-lista-todos-los-coles-cajas-atras.jpg",
+                        spec: {
+                            description: "Nuestras mascarillas de arcilla preparada son una mezcla rica en minerales que purifican, desintoxican y regeneran la piel al absorber el exceso de grasa e impurezas, dejando los poros limpios y la piel suave, tersa y equilibrada, siendo efectiva para controlar el acné y mejorar el tono cutáneo.",
+                            colors: "Amarilla, Azul, Blanca, Roja, Verde, Uva.",
+                            presentation: "130g."
+                        },
+                        // Se actualiza a customHtml para el nuevo diseño elegante
+                        customHtml: `
+                            <div class="mt-12 mb-16 animate-fade-in space-y-16">
+                                
+                                <!-- Sección: Características y Beneficios -->
+                                <div>
+                                    <div class="text-center mb-10">
+                                        <h3 class="font-serif text-3xl text-brand-dark italic mb-2">Características y Beneficios</h3>
+                                        <div class="w-12 h-px bg-brand-gold mx-auto"></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="sparkles" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Purificación Profunda</h4>
+                                            <p class="text-xs text-gray-500">Actúa como un imán, extrayendo sebo, suciedad y toxinas de los poros.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="shield" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Control de Grasa</h4>
+                                            <p class="text-xs text-gray-500">Ideal para pieles grasas y con tendencia al acné, reduciendo el brillo.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="sprout" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Regeneración Celular</h4>
+                                            <p class="text-xs text-gray-500">Promueve la renovación de la piel y la producción de colágeno y elastina.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg md:col-span-1 md:col-start-1">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="feather" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Calma y Suaviza</h4>
+                                            <p class="text-xs text-gray-500">Deja una sensación de frescura y tersura, aliviando irritaciones.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg md:col-span-2">
+                                            <div class="flex items-center justify-center gap-4 h-full">
+                                                <div class="text-brand-clay"><i data-lucide="gem" class="w-6 h-6"></i></div>
+                                                <div class="text-left">
+                                                    <h4 class="font-serif font-bold text-brand-dark mb-1">Rica en Minerales</h4>
+                                                    <p class="text-xs text-gray-500">Aporta oligoelementos esenciales (hierro, magnesio, zinc) que nutren la piel.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Modo de uso general -->
+                                <div>
+                                    <h3 class="font-serif text-2xl text-brand-dark italic mb-8 text-center">Modo de Uso General</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                                        <!-- Línea conectora (Desktop) -->
+                                        <div class="hidden md:block absolute top-4 left-0 w-full h-px bg-gray-200 z-0"></div>
+
+                                        <!-- Step 1 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">1</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Limpiar la piel</h5>
+                                            <p class="text-xs text-gray-500">Asegúrate de que el rostro esté libre de maquillaje y suciedad.</p>
+                                        </div>
+                                        <!-- Step 2 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">2</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Aplicar</h5>
+                                            <p class="text-xs text-gray-500">Extiende una capa uniforme con brocha o dedos.</p>
+                                        </div>
+                                        <!-- Step 3 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">3</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Tiempo de acción</h5>
+                                            <p class="text-xs text-gray-500">Deja actuar de 10 a 20 minutos, hasta que se seque ligeramente (no completamente para evitar resecar).</p>
+                                        </div>
+                                        <!-- Step 4 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">4</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Retirar</h5>
+                                            <p class="text-xs text-gray-500">Enjuaga con agua tibia y seca suavemente.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SEPARADOR ELEGANTE -->
+                                <div class="w-full h-px bg-gray-200 my-16"></div>
+
+                                <!-- Sección: Tipos de Arcilla (NUEVAS TARJETAS) -->
+                                <div>
+                                    <div class="text-center mb-16">
+                                        <span class="text-brand-clay uppercase tracking-[0.3em] text-xs font-bold block mb-2">Nuestras Variedades</span>
+                                        <h3 class="font-serif text-4xl text-brand-dark italic">Tipos de Arcilla y Usos</h3>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                        
+                                        <!-- Card: Arcilla Blanca -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-blancas.png')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-blanca.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Suavidad y Calma</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Blanca (Caolín)</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Muy suave, para todo tipo de piel, sensible y apagada. Descongestiona y calma.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Verde -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-verde.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-verde.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Purificación Total</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Verde</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Potente seborreguladora, purificante y anti-acné. Ideal para pieles grasas y con puntos negros.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Roja -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-roja.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-roja.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Vitalidad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Roja</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Estimula la circulación, tonifica, y es buena para pieles maduras, cansadas o tratamientos corporales.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Amarilla -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-amarillo.png')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-lista-piel-amarilla.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Luminosidad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Amarilla</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Revitalizante, mejora la elasticidad y es apta para pieles sensibles.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Uva -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-uva-.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-uva.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Anti-Edad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Uva</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Regenera la elastina, antioxidante, exfolia e ilumina.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Azul -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-azul.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-azul.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6 justify-center">
+                                                    <span class="text-white font-serif text-lg italic">Equilibrio</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Azul</h4>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Específica para reducir la seborrea y controlar el exceso de grasa facial y capilar.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        `
+                    },
+                    {
+                        id: "polvo",
+                        title: "Arcilla en Polvo (Pura)",
+                        thumb: "arcilla-piel-frascos-3-prestaciones-todos-los-colores.jpg",
+                        spec: {
+                            description: `
+                                <p class="mb-4 text-gray-700">
+                                    <strong class="text-brand-clay font-serif text-lg">Pureza Mineral.</strong> 
+                                    Nuestra arcilla en polvo natural para belleza y salud es un mineral 100% puro, libre de impurezas y extraído responsablemente de la tierra. Se presenta como un polvo fino y sedoso, diseñado para los rituales de cuidado más exigentes.
+                                </p>
+                                <p class="text-sm text-gray-600 italic">
+                                    Materia prima versátil para mascarillas, cataplasmas y formulaciones cosméticas de alta gama.
+                                </p>
+                            `,
+                            colors: "Amarilla, Azul, Blanca, Roja, Verde, Uva.",
+                            presentation: "100 gramos, 1/2 libra y 1 libra."
+                        },
+                        // Eliminamos showTable: true y agregamos customHtml
+                        customHtml: `
+                            <div class="mt-12 mb-16 animate-fade-in space-y-16">
+                                
+                                <!-- Sección: Beneficios Clave -->
+                                <div>
+                                    <div class="text-center mb-10">
+                                        <h3 class="font-serif text-3xl text-brand-dark italic mb-2">Beneficios Clave</h3>
+                                        <div class="w-12 h-px bg-brand-gold mx-auto"></div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="sparkles" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Purificación y Detox</h4>
+                                            <p class="text-xs text-gray-500">Absorbe toxinas, grasa y células muertas.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="droplet" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Seborreguladora</h4>
+                                            <p class="text-xs text-gray-500">Ideal para controlar el brillo y el acné.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="feather" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Calmante</h4>
+                                            <p class="text-xs text-gray-500">Reduce irritaciones y rojeces de la piel.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg md:col-span-1 md:col-start-1">
+                                            <div class="text-brand-clay mb-2"><i data-lucide="sun" class="w-6 h-6 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-1">Revitalizante</h4>
+                                            <p class="text-xs text-gray-500">Aporta luminosidad, silicio, zinc y calcio.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg md:col-span-2">
+                                            <div class="flex items-center justify-center gap-4 h-full">
+                                                <div class="text-brand-clay"><i data-lucide="refresh-cw" class="w-6 h-6"></i></div>
+                                                <div class="text-left">
+                                                    <h4 class="font-serif font-bold text-brand-dark mb-1">Exfoliante Suave</h4>
+                                                    <p class="text-xs text-gray-500">Renueva la piel delicadamente sin dañarla.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Ritual de Uso -->
+                                <div>
+                                    <h3 class="font-serif text-2xl text-brand-dark italic mb-8 text-center">Ritual de Uso</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                                        <!-- Línea conectora (Desktop) -->
+                                        <div class="hidden md:block absolute top-4 left-0 w-full h-px bg-gray-200 z-0"></div>
+
+                                        <!-- Step 1 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">1</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Mezcla</h5>
+                                            <p class="text-xs text-gray-500">Combina la arcilla con agua mineral (no del grifo) hasta lograr una pasta homogénea.</p>
+                                        </div>
+                                        <!-- Step 2 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">2</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Aplicación</h5>
+                                            <p class="text-xs text-gray-500">Extiende suavemente la pasta sobre la piel limpia del rostro o cuerpo.</p>
+                                        </div>
+                                        <!-- Step 3 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">3</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Espera</h5>
+                                            <p class="text-xs text-gray-500">Deja actuar unos minutos. En pieles secas, retira antes de que seque por completo.</p>
+                                        </div>
+                                        <!-- Step 4 -->
+                                        <div class="bg-white p-6 relative z-10 text-center group">
+                                            <div class="w-8 h-8 mx-auto bg-brand-dark text-white rounded-full flex items-center justify-center font-serif font-bold mb-3 group-hover:bg-brand-clay transition-colors">4</div>
+                                            <h5 class="font-bold text-sm text-brand-dark uppercase tracking-widest mb-2">Retira</h5>
+                                            <p class="text-xs text-gray-500">Enjuaga delicadamente con abundante agua fresca.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Consejos -->
+                                <div class="bg-brand-dark text-white p-6 rounded-lg shadow-lg text-center">
+                                    <p class="font-serif italic text-lg mb-2 text-brand-gold">Consejo de Experto</p>
+                                    <p class="text-sm font-light text-gray-200">
+                                        Para una experiencia de spa superior, enriquece tu mezcla con unas gotas de aceites esenciales naturales para potenciar sus efectos terapéuticos.
+                                    </p>
+                                </div>
+                                
+                                <!-- SEPARADOR ELEGANTE -->
+                                <div class="w-full h-px bg-gray-200 my-16"></div>
+
+                                <!-- SECCIÓN: SALUD -->
+                                <div>
+                                    <div class="text-center mb-10">
+                                        <h3 class="font-serif text-3xl text-brand-dark italic mb-2">Salud y Bienestar</h3>
+                                        <div class="w-12 h-px bg-brand-gold mx-auto mb-4"></div>
+                                        <p class="text-gray-500 text-sm max-w-xl mx-auto">El poder terapéutico de la tierra al servicio de tu cuerpo.</p>
+                                    </div>
+
+                                    <!-- Propiedades Clave Grid -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-12">
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg group">
+                                            <div class="text-brand-clay mb-3 group-hover:scale-110 transition-transform"><i data-lucide="shield" class="w-8 h-8 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-2">Absorbente</h4>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Elimina eficazmente toxinas e impurezas del organismo.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg group">
+                                            <div class="text-brand-clay mb-3 group-hover:scale-110 transition-transform"><i data-lucide="heart-pulse" class="w-8 h-8 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-2">Antiinflamatoria</h4>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Calma procesos inflamatorios y alivia el dolor local (Analgésica).</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg group">
+                                            <div class="text-brand-clay mb-3 group-hover:scale-110 transition-transform"><i data-lucide="sprout" class="w-8 h-8 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-2">Regeneradora</h4>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Promueve la cicatrización natural y la renovación celular.</p>
+                                        </div>
+                                        <div class="p-6 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow rounded-lg group">
+                                            <div class="text-brand-clay mb-3 group-hover:scale-110 transition-transform"><i data-lucide="gem" class="w-8 h-8 mx-auto"></i></div>
+                                            <h4 class="font-serif font-bold text-brand-dark mb-2">Remineralizante</h4>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Aporta oligoelementos esenciales para el equilibrio corporal.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                        <!-- Preparación Cataplasmas -->
+                                        <div class="bg-brand-light/40 p-8 rounded-2xl border border-brand-sage/20 relative overflow-hidden">
+                                            <div class="absolute top-0 right-0 p-4 opacity-5"><i data-lucide="layers" class="w-24 h-24 text-brand-dark"></i></div>
+                                            <h3 class="font-serif text-xl text-brand-dark font-bold mb-4 flex items-center gap-2">
+                                                <i data-lucide="flask-conical" class="w-5 h-5 text-brand-clay"></i> Preparación de Cataplasmas
+                                            </h3>
+                                            <p class="text-sm text-gray-600 leading-relaxed text-justify">
+                                                Para preparar una cataplasma terapéutica, mezcla <strong class="text-brand-clay">Arcilla Roja</strong> (ideal para golpes) o <strong class="text-brand-clay">Verde</strong> (antiinflamatoria) con agua hasta obtener una pasta suave y consistente.
+                                            </p>
+                                            <ul class="mt-4 space-y-3 text-sm text-gray-600">
+                                                <li class="flex items-start gap-3">
+                                                    <span class="w-5 h-5 rounded-full bg-brand-clay text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                                                    <span>Aplica una capa de aproximadamente <strong>0.5 cm</strong> sobre la zona afectada.</span>
+                                                </li>
+                                                <li class="flex items-start gap-3">
+                                                    <span class="w-5 h-5 rounded-full bg-brand-clay text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                                                    <span>Cubre con gasa o vinipel para mantener la humedad y potenciar la absorción.</span>
+                                                </li>
+                                                <li class="flex items-start gap-3">
+                                                    <span class="w-5 h-5 rounded-full bg-brand-clay text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                                                    <span>Deja actuar hasta que se seque y retira suavemente con agua tibia.</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Consideraciones Importantes -->
+                                        <div class="bg-red-50/50 p-8 rounded-2xl border border-red-100 flex flex-col justify-center">
+                                            <h3 class="font-serif text-xl text-red-800 font-bold mb-4 flex items-center gap-2">
+                                                <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i> Consideraciones Importantes
+                                            </h3>
+                                            <div class="space-y-4">
+                                                <div class="bg-white p-4 rounded-lg border-l-4 border-red-400 shadow-sm">
+                                                    <h5 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-1">Uso Interno</h5>
+                                                    <p class="text-sm text-gray-600">
+                                                        La ingesta debe ser siempre <strong>consultada con un profesional</strong> de la salud.
+                                                    </p>
+                                                </div>
+                                                <div class="bg-white p-4 rounded-lg border-l-4 border-red-400 shadow-sm">
+                                                    <h5 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-1">Contraindicaciones</h5>
+                                                    <p class="text-sm text-gray-600">
+                                                        No se recomienda su uso interno para personas con estreñimiento crónico, obstrucciones o hernias intestinales.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- SEPARADOR ELEGANTE -->
+                                <div class="w-full h-px bg-gray-200 my-16"></div>
+
+                                <!-- Sección: Nuestra Colección de Tierras (REDISEÑADA Y MOVIDA AL FINAL) -->
+                                <div>
+                                    <div class="text-center mb-16">
+                                        <span class="text-brand-clay uppercase tracking-[0.3em] text-xs font-bold block mb-2">Variedad Exclusiva</span>
+                                        <h3 class="font-serif text-4xl text-brand-dark italic">Nuestra Colección de Tierras</h3>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                        
+                                        <!-- Card: Arcilla Blanca -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 flex relative">
+                                                <div class="w-1/2 h-full overflow-hidden">
+                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-blanca.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                </div>
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Suavidad Pura</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-gray-200 border border-gray-300"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Blanca</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Caolín Puro</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Muy suave, ideal para pieles sensibles y apagadas. Descongestiona, calma y restaura la luz natural.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Verde -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 overflow-hidden relative">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-verde.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Detox Profundo</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-green-700"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Verde</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Limpieza Total</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Potente seborreguladora y anti-acné. La elección experta para pieles grasas y puntos negros.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Roja -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 overflow-hidden relative">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-roja.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Vitalidad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-red-700"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Roja</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Estimulante</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Estimula la circulación y tonifica. Perfecta para pieles maduras, cansadas o tratamientos corporales.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Amarilla -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 overflow-hidden relative">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-amarilla-.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Luminosidad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Amarilla</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Energía</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Revitalizante y mejoradora de elasticidad. Un toque de energía suave apto para pieles sensibles.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Uva -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 overflow-hidden relative">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-uva.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Anti-Edad</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-purple-700"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Uva</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Antioxidante</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Regenera la elastina y exfolia suavemente. Potente antioxidante que ilumina y rejuvenece.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Azul -->
+                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
+                                            <div class="h-64 overflow-hidden relative">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-azul.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                                    <span class="text-white font-serif text-lg italic">Equilibrio</span>
+                                                </div>
+                                            </div>
+                                            <div class="p-8 text-center relative">
+                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
+                                                    <div class="w-4 h-4 rounded-full bg-blue-700"></div>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Azul</h4>
+                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Control Graso</span>
+                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
+                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
+                                                    Específica para reducir la seborrea y controlar el exceso de grasa facial y capilar.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        `
+                    }
+                ]
+            },
+            
+            // ARTE Y ESCOLAR (FUSIONADA CON TÉCNICO) - NOMBRE ACTUALIZADO
+            arte: {
+                mainHeader: {
+                    title: "Arte y Escolar",
+                    subtitle: "Todo para la creación: desde arcillas y esmaltes hasta materiales técnicos.",
+                    img: "arcillas-moldeables-o-plastilinas-en-fila-todos-los-colores.jpg"
+                },
+                products: [
+                    // PRODUCTOS ORIGINALES DE ARTE
+                    {
+                        id: "moldeables",
+                        title: "Arcilla Moldeable",
+                        thumb: "arcillas-moldeables-o-plastilinas-6-colores-forman-media-luna.jpg",
+                        spec: {
+                            description: "Nuestra arcilla cerámica es una materia prima natural, plástica y modelable que, al mezclarse con agua, forma una masa fácil de moldear, de fácil secado al aire, sin agrietarse y endureciéndose permanentemente al hornearse a altas temperaturas, resultando en cerámica, material rígido, duradero y usado en objetos artísticos, utilitarios y de construcción.",
+                            colors: "Amarillo, Azul, Rojo, Verde, Beige(blanco hueso), Uva.",
+                            presentation: `
+                                <div class="space-y-4 mt-2">
+                                    <p class="text-sm"><strong>Presentación:</strong> 1kg (Paquete x 10) <br> 1 lb (Paquete x 20)</p>
+                                    
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Características principales:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Composición:</strong> Silicatos de aluminio hidratados, con impurezas que varían su color y propiedades (puro es blanco).</li>
+                                            <li><strong>Plasticidad:</strong> Su estructura laminar permite que las partículas se deslicen con agua, facilitando el modelado.</li>
+                                            <li><strong>Textura:</strong> Suave y fina al tacto, sin olor.</li>
+                                            <li><strong>Proceso:</strong> Amasar antes de usar; se seca sin grietas; se hornea para volverse cerámica.</li>
+                                            <li><strong>Secado:</strong> Seca al aire libre.</li>
+                                            <li><strong>Variedades:</strong> Baja temperatura (900-1050°C) y alta temperatura (>1200°C).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "arcillas-moldeables-o-plastilinas-en-fila-todos-los-colores.jpg", desc: "Variedad de Colores" },
+                            { src: "arcilla-moldeable-o-plastilina-modelos-1.png", desc: "Figuras Creativas" },
+                            { src: "arcilla-moldeable-o-plastilina-modelos-2.png", desc: "Esculturas" }
+                        ]
+                    },
+                    {
+                        id: "polvo-arte",
+                        title: "Arcilla en Polvo Artística",
+                        thumb: "arcilla-polvo-arte-1libra.jpg",
+                        spec: {
+                            description: "Nuestra arcilla en polvo para arte y manualidades es un material natural fino, como talco, que se mezcla con agua para obtener una pasta moldeable, ideal para modelar, esculpir y crear figuras; es versátil (seca al aire y posteriormente se puede hornear), no tóxica (ideal para niños), y permite desde trabajos escolares hasta piezas de cerámica, ofreciendo buena plasticidad y durabilidad tras su endurecimiento, adecuado para proyectos creativos y didácticos.",
+                            colors: "Amarilla, azul, roja, beige, verde y uva.",
+                            presentation: "1 libra."
+                        },
+                        gallery: [
+                            { src: "arcilla-polvo-arte-1libra.jpg", desc: "Bolsa 1 Libra" },
+                            { src: "arcillas-de-colores-montones-regada.jpg", desc: "Textura y Colores" }
+                        ]
+                    },
+                    {
+                        id: "esmaltes",
+                        title: "Esmaltes Acrílicos",
+                        thumb: "esmaltes-acrilicos.jpg",
+                        spec: {
+                            description: "Nuestros esmaltes en aceite, o pinturas al óleo, son una técnica artística que usa pigmentos mezclados con aceites secantes para crear obras duraderas, vibrantes y con rica textura, permitiendo mezclas suaves y tiempo para corregir, ofreciendo acabados brillantes y alta pigmentación que se conservan. Se caracterizan por su brillo, profundidad y secado lento, para superficies como cerámica, metal, madera, vidrio, plástico.",
+                            colors: "Amarillo, azul, rojo, verde, blanco, negro, oro, plata, trasparente ámbar.",
+                            presentation: `
+                                <div class="space-y-4 mt-1">
+                                    <p class="text-sm">60 ml.</p>
+                                    
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Características en el Arte:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Composición:</strong> Pigmentos suspendidos en un medio oleoso.</li>
+                                            <li><strong>Secado Lento:</strong> Permite mezclar colores directamente sobre el lienzo, corregir errores y crear transiciones suaves (veladuras).</li>
+                                            <li><strong>Acabado:</strong> Brillante, saturado y vibrante, con gran profundidad de color.</li>
+                                            <li><strong>Durabilidad:</strong> Muy resistente y duradera, conservando sus colores por siglos.</li>
+                                            <li><strong>Textura:</strong> Densa y consistente, ideal para dar volumen y textura a la obra.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Técnicas y Usos Artísticos:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li>Ideal para veladuras y transparencias (capas finas de color).</li>
+                                            <li>Se usa en retratos, paisajes y obras maestras por su riqueza cromática.</li>
+                                            <li>Se puede diluir con varsol.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "esmaltes-acrilicos.jpg", desc: "" },
+                            { src: "esmalte-acrilico-3.jpg", desc: "" },
+                            { src: "pintura-acrilica-elementos-pintados-vidrio.png", desc: "" },
+                            { src: "pintura-acrilica-elementos-pointados-1.png", desc: "" },
+                            { src: "pintura-acrilica-elementos-pointados-4.png", desc: "" },
+                            { src: "pintura-acrilica-elementos-pointados-5.png", desc: "" }
+                        ]
+                    },
+                    {
+                        id: "arenas",
+                        title: "Arenas Decorativas",
+                        thumb: "arena-todos-los-colores-forma-de-sol-300g.jpg",
+                        spec: {
+                            description: "Nuestra arena escolar es un material no tóxico, suave y moldeable, diseñada para juegos y actividades didácticas, que estimula la creatividad, motricidad fina y sentidos; no se seca, no mancha y es reutilizable, ideal para trabajar volumen y formas con moldes y herramientas en un ambiente seguro y sensorial.",
+                            colors: "Amarillo, azul, rojo, verde, blanco, negro, oro, plata, natural, naranja, rosa, violeta.",
+                            presentation: `
+                                <div class="space-y-4 mt-2">
+                                    <p class="text-sm"><strong>Presentación:</strong> 300 gramos.</p>
+                                    
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Características Principales:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Seguridad:</strong> Elaborada con materiales seguros para niños.</li>
+                                            <li><strong>Textura:</strong> Suave, fácil de manipular, no se pega a las manos y no se seca.</li>
+                                            <li><strong>Versatilidad:</strong> Moldeable, permite crear formas, figuras y escenarios.</li>
+                                            <li><strong>Didáctica:</strong> Fomenta la coordinación motora fina, creatividad, imaginación y desarrollo sensorial.</li>
+                                            <li><strong>Composición:</strong> Arena de cuarzo (sílice).</li>
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Beneficios Educativos:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Desarrollo Sensorial:</strong> Experiencia táctil y visual única.</li>
+                                            <li><strong>Motricidad Fina:</strong> Mejora la destreza de las manos al moldear.</li>
+                                            <li><strong>Creatividad e Imaginación:</strong> Permite construir mundos y figuras.</li>
+                                            <li><strong>Relajación:</strong> Su textura suave ayuda a reducir el estrés.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Uso:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li>Se usa en interiores y exteriores, sobre superficies planas.</li>
+                                            <li>No requiere agua, no mancha y se limpia fácilmente con agua y jabón.</li>
+                                            <li>Ideal para actividades pedagógicas que enseñan conceptos de volumen y formas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "arena-de-colores-en-jarron-1.png", desc: "Decoración Jarrón" },
+                            { src: "arena-de-colores-en-jarron-2.png", desc: "Arte en Vidrio" },
+                            { src: "arena-de-colores-en-jarron-con-el-logo.png", desc: "Manualidades" }
+                        ]
+                    },
+                    {
+                        id: "gravillas",
+                        title: "Gravillas",
+                        thumb: "gravilla-de-colores-300g.jpg",
+                        spec: {
+                            description: "Nuestras gravillas son pequeñas piedras trituradas y naturales, elaboradas con las mas finas piedras de cuarzo, disponibles en diversos colores, usadas para añadir textura y decoración en proyectos universitarios, bricolaje, arreglos florales, acuarios, jardines zen y decoración del hogar, ofreciendo buen drenaje y control de malezas, siendo seguras para niños y mascotas.",
+                            colors: "Amarillo, Azul, Rojo, Verde, Blanco, Negro, Oro, Plata, Natural, Festival.",
+                            presentation: `
+                                <div class="space-y-4 mt-2">
+                                    <p class="text-sm"><strong>Presentación:</strong> 300 gramos.</p>
+                                    
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Usos en manualidades y decoración:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Decoración de jarrones y cuencos:</strong> Para bases de arreglos florales, velas o centros de mesa.</li>
+                                            <li><strong>Jardines y paisajismo:</strong> Decoración de suculentas y cactus, control de malezas y drenaje en macetas.</li>
+                                            <li><strong>Acuarios y terrarios:</strong> Como lecho o decoración, proporcionando un aspecto natural.</li>
+                                            <li><strong>Jardines Zen:</strong> Crean ambientes de relajación y estética japonesa con texturas suaves.</li>
+                                            <li><strong>Efectos de textura:</strong> Mezcladas con pintura o resina para crear efectos en paredes (grafiado).</li>
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Consideraciones:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Limpieza:</strong> Es recomendable lavar la grava (2-3 veces) para eliminar el polvo superficial antes de usarla en interiores o acuarios.</li>
+                                            <li><strong>Seguridad:</strong> Las gravas naturales son ideales para hogares con niños y mascotas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "pesera-con-gravilla-1.png", desc: "Acuarios" },
+                            { src: "pesera-con-gravilla-2.png", desc: "Paisajismo" }
+                        ]
+                    },
+                    {
+                        id: "grava-colores",
+                        title: "Gravas",
+                        thumb: "grava-de-colores.jpg",
+                        spec: {
+                            description: "Nuestras gravas son pequeñas piedras trituradas y naturales, elaboradas con las mas finas piedras de cuarzo, disponibles en diversos colores, usadas para añadir textura y decoración en proyectos universitarios, bricolaje, arreglos florales, acuarios, jardines zen y decoración del hogar, ofreciendo buen drenaje y control de malezas, siendo seguras para niños y mascotas.",
+                            colors: "Natural, Blanco, Oro, Plata, Festival.",
+                            presentation: `
+                                <div class="space-y-4 mt-2">
+                                    <p class="text-sm"><strong>Presentación:</strong> 300 gramos.</p>
+                                    
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Usos en manualidades y decoración:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Decoración de jarrones y cuencos:</strong> Para bases de arreglos florales, velas o centros de mesa.</li>
+                                            <li><strong>Jardines y paisajismo:</strong> Decoración de suculentas y cactus, control de malezas y drenaje en macetas.</li>
+                                            <li><strong>Acuarios y terrarios:</strong> Como lecho o decoración, proporcionando un aspecto natural.</li>
+                                            <li><strong>Jardines Zen:</strong> Crean ambientes de relajación y estética japonesa con texturas suaves.</li>
+                                            <li><strong>Efectos de textura:</strong> Mezcladas con pintura o resina para crear efectos en paredes (grafiado).</li>
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <p class="font-bold text-brand-clay text-xs uppercase mb-1">Consideraciones:</p>
+                                        <ul class="list-disc pl-4 text-xs space-y-1 text-gray-600">
+                                            <li><strong>Limpieza:</strong> Es recomendable lavar la grava (2-3 veces) para eliminar el polvo superficial antes de usarla en interiores o acuarios.</li>
+                                            <li><strong>Seguridad:</strong> Las gravas naturales son ideales para hogares con niños y mascotas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "grava-de-colores.jpg", desc: "Grano Grueso" },
+                            { src: "pesera-con-gravilla-1.png", desc: "Uso en Peceras" },
+                            { src: "pesera-con-gravilla-2.png", desc: "Decoración Acuática" }
+                        ]
+                    },
+                    // PRODUCTOS MOVIDOS DESDE TÉCNICO
+                    {
+                        id: "aserrin",
+                        title: "Aserrín Natural",
+                        thumb: "aserrin-natural-50g.jpg",
+                        spec: {
+                            description: "Nuestro aserrín es un material derivado de la madera, usado en manualidades, juegos didácticos y decoración, valorado por su textura única y por ser base para la creatividad, promueven el desarrollo sensorial y motor fino, ofreciendo alternativas naturales y seguras cuando se manipula.",
+                            colors: "Natural y coloreado.",
+                            presentation: "50 gramos."
+                        },
+                        gallery: [
+                            { src: "aserrin-natural-maquita-1.png", desc: "Maquetas" },
+                            { src: "aserrin-natural-maquita-2.png", desc: "Texturas" }
+                        ]
+                    },
+                    {
+                        id: "yesos",
+                        title: "Yeso en Polvo",
+                        thumb: "yeso-dental-blnaco-500g.jpg",
+                        spec: {
+                            description: "Nuestro yeso en polvo para arte es un compuesto de sulfato de calcio que, al mezclar con agua, forma una pasta que fragua y endurece, ideal para hacer moldes, esculturas, relieves y prototipos; se caracteriza por su acabado liso y blanco, gran detalle, secado rápido, fácil manipulación y versatilidad para pintar y decorar, siendo fundamental para artistas que buscan crear piezas decorativas, artísticas o prototipos con gran definición y calidad, ofreciendo una superficie excelente para la pintura y la creación de recuerdos. Ideal en trabajos profesionales, universitarios escolares y artísticos",
+                            colors: "Blanco",
+                            presentation: "500 gramos."
+                        },
+                        gallery: [
+                            { src: "yeso-dental-blanco-mostracion-dentadura.png", desc: "Modelos Dentales" },
+                            { src: "yeso-dental-blanco-mostracion-mano.png", desc: "Moldes Corporales" }
+                        ]
+                    },
+                    {
+                        id: "tornos",
+                        title: "Torno para cerámica",
+                        thumb: "torno-sin-medidas.png",
+                        spec: {
+                            description: "Nuestro torno para cerámica es una máquina giratoria con un plato plano y redondo que permite al artesano moldear arcilla con precisión para crear piezas simétricas como vasijas, cuencos y jarrones, mediante el movimiento de rotación constante y el uso de manos húmedas y herramientas, controlando la velocidad y la dirección para dar forma, decorar y texturizar la arcilla, siendo accionados por motor eléctrico, ideal para principiantes (de mesa) y profesionales.",
+                            colors: "Estructura metálica y madera.",
+                            presentation: `
+                                <div class="space-y-2 mt-1">
+                                    <p class="font-bold text-brand-clay text-xs uppercase">Componentes y funcionamiento:</p>
+                                    <ul class="list-disc pl-4 text-xs space-y-1">
+                                        <li><strong>Plato giratorio (Rueda):</strong> Superficie circular donde se centra la arcilla y gira a velocidades controladas (10-1000 RPM).</li>
+                                        <li><strong>Motor/Pedal:</strong> Proporciona la fuerza para la rotación; eléctrico (de pie).</li>
+                                        <li><strong>Control de velocidad y giro:</strong> Ajusta la rapidez del giro, a menudo con un pedal para manos libres y mayor control.</li>
+                                        <li><strong>Cuerpo:</strong> Hecho en pino y hierro.</li>
+                                    </ul>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "torno-con-modelo-vista-frontal.jpg", desc: "Uso Profesional" },
+                            { src: "torno-vista-porterior-con-modelo.jpg", desc: "Ergonomía" },
+                            { src: "torno-con-modelo-vista-frontal.jpg", desc: "Vista Frontal" },
+                            { src: "torno-vista-posterior.jpg", desc: "Vista Posterior" },
+                            { src: "torno-vista-forntal.jpg", desc: "Estructura" },
+                            { src: "torno-sin-medidas.png", desc: "Detalle Producto" }
+                        ]
+                    },
+                    {
+                        id: "maquetas",
+                        title: "Ladrillos, Tejas, Bloques a Escala",
+                        thumb: "ladrillos-tejas-bloques-a-escala.jpg",
+                        spec: {
+                            description: "Nuestros ladrillos para maquetas son réplicas en miniatura de ladrillos reales, fabricados en cerámica, que replican detalles arquitectónicos para construcciones a escala (casas, castillos, dioramas), ofreciendo realismo, resistencia y variedad de tamaños y colores para manualidades y proyectos de modelismo, ideales para maquetas de arquitectura o casas de muñecas.",
+                            colors: "Terracota natural.",
+                            presentation: `
+                                <div class="space-y-2 mt-1">
+                                    <p class="font-bold text-brand-clay text-xs uppercase">Ladrillos:</p>
+                                    <ul class="list-disc pl-4 text-xs">
+                                        <li>1-150 x (100 unidades)</li>
+                                        <li>1-100 x (42 unidades)</li>
+                                        <li>1-25 x (7 unidades)</li>
+                                    </ul>
+                                    <p class="font-bold text-brand-clay text-xs uppercase mt-2">Tejas:</p>
+                                    <ul class="list-disc pl-4 text-xs">
+                                        <li>1-150 x (100 unidades)</li>
+                                    </ul>
+                                    <p class="font-bold text-brand-clay text-xs uppercase mt-2">Bloques:</p>
+                                    <ul class="list-disc pl-4 text-xs">
+                                        <li>1-150 x (50 unidades)</li>
+                                    </ul>
+                                </div>
+                            `
+                        },
+                        gallery: [
+                            { src: "mini-casa-de-ladrillo.png", desc: "Proyectos" },
+                            { src: "mini-molino-de-ladrillo.png", desc: "Construcciones" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentCategory = '';
+
+        function showSubCategory(category) {
+            currentCategory = category;
+            document.getElementById('page-products').classList.remove('active');
+            document.getElementById('page-detail').classList.add('active');
+            window.scrollTo(0,0);
+            
+            const container = document.getElementById('detail-content');
+            const titleEl = document.getElementById('detail-title');
+            
+            // Lógica unificada para todas las categorías (Grid de Menú)
+            const catData = catalog[category];
+            titleEl.textContent = catData.mainHeader.title;
+            
+            // Render Header
+            let html = `
+                <div class="section-header animate-fade-in">
+                    <h2 class="font-serif text-3xl text-brand-dark mb-4">${catData.mainHeader.title}</h2>
+                    <p class="text-gray-500 mb-8 max-w-2xl mx-auto">${catData.mainHeader.subtitle}</p>
+                </div>
+            `;
+
+            // Render Grid Menu - Updated with new classes for elegance
+            html += `<div class="category-menu-grid">`;
+            catData.products.forEach((prod, index) => {
+                html += `
+                    <!-- AÑADIDA CLASE gold-border-card A LAS CARTAS DEL SUBMENÚ -->
+                    <div class="menu-card gold-border-card animate-fade-in" onclick="showProductDetail('${category}', ${index})" style="animation-delay: ${index*0.1}s">
+                        <img src="${buildImgUrl(prod.thumb)}" alt="${prod.title}" onerror="handleImageError(this)">
+                        <div class="menu-card-overlay">
+                            <h3>${prod.title}</h3>
+                            <div class="w-12 h-px bg-brand-gold mb-6"></div>
+                            <span class="menu-card-btn">Explorar</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            
+            container.innerHTML = html;
+        }
+
+        function showProductDetail(category, productIndex) {
+            const product = catalog[category].products[productIndex];
+            const container = document.getElementById('detail-content');
+            window.scrollTo(0,0);
+
+            const backBtn = `
+                <div class="mb-6">
+                    <button onclick="showSubCategory('${category}')" class="text-sm font-bold text-brand-clay hover:underline flex items-center gap-2">
+                        &larr; Volver a ${catalog[category].mainHeader.title}
+                    </button>
+                </div>
+            `;
+
+            // SE APLICA EL MARCO EXCLUSIVO A LA IMAGEN PRINCIPAL (exclusive-product-frame)
+            const specHtml = `
+                <div class="spec-card animate-fade-in">
+                    <div class="md:w-1/2 relative bg-gray-50 flex items-center justify-center p-8">
+                        <img src="${buildImgUrl(product.thumb)}" class="exclusive-product-frame w-full h-auto max-h-96 object-contain rounded-lg bg-white p-4" alt="${product.title}" onerror="handleImageError(this)">
+                    </div>
+                    <div class="p-8 md:w-1/2 flex flex-col justify-center">
+                        <h2 class="text-3xl font-serif text-brand-dark mb-2 font-bold">${product.title}</h2>
+                        <div class="w-16 h-1 bg-brand-gold mb-6"></div>
+                        
+                        <div class="mb-6 text-gray-600 text-sm leading-relaxed">
+                            ${product.spec.description}
+                        </div>
+
+                        <table class="spec-table w-full mb-8">
+                            <tr><td>Presentación</td><td>${product.spec.presentation}</td></tr>
+                            ${product.spec.colors ? `<tr><td>Colores</td><td>${product.spec.colors}</td></tr>` : ''}
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            let extrasHtml = '';
+
+            // Tabla de Beneficios (Para Belleza)
+            if(product.customHtml) {
+                extrasHtml += product.customHtml;
+            } else if(product.showTable) {
+                extrasHtml += `
+                    <div class="mt-8 mb-12 animate-fade-in">
+                        <h3 class="text-xl font-serif text-brand-dark mb-4">Tabla de Beneficios</h3>
+                        ${TABLE_DATA}
+                    </div>
+                `;
+            }
+
+            // Galería Compleja (Para Mascarillas) - AÑADIDO MARCO DE GALERÍA
+            if(product.complexGallery) {
+                const complexItems = product.complexGallery.map(item => `
+                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-md flex flex-col md:flex-row h-auto border border-gray-100">
+                        <div class="md:w-1/2 flex h-48 p-2 gap-2">
+                            <div class="w-1/2 h-full gallery-gold-frame rounded overflow-hidden">
+                                <img src="${buildImgUrl(item.img1)}" class="w-full h-full object-cover" onerror="handleImageError(this)">
+                            </div>
+                            <div class="w-1/2 h-full gallery-gold-frame rounded overflow-hidden">
+                                <img src="${buildImgUrl(item.img2)}" class="w-full h-full object-cover" onerror="handleImageError(this)">
+                            </div>
+                        </div>
+                        <div class="p-4 md:w-1/2 flex flex-col justify-center">
+                            <h4 class="text-lg font-serif text-brand-dark font-bold">${item.title}</h4>
+                            <p class="text-xs text-gray-500"><strong>Piel:</strong> ${item.skin}</p>
+                            <p class="text-xs text-gray-500"><strong>Beneficio:</strong> ${item.benefit}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+                extrasHtml += `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        ${complexItems}
+                    </div>
+                `;
+            }
+
+            // Galería Simple - AÑADIDO MARCO DE GALERÍA (gallery-gold-frame)
+            if(product.gallery && product.gallery.length > 0) {
+                const images = product.gallery.map(img => `
+                    <div class="gallery-gold-frame group relative w-[45%] md:w-[22%] aspect-square rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="w-full h-full overflow-hidden relative">
+                            <img src="${buildImgUrl(img.src)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="handleImageError(this)">
+                            ${img.desc ? `
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p class="text-white text-xs font-bold">${img.desc}</p>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                extrasHtml += `
+                    <div class="mt-12 animate-fade-in">
+                        <h3 class="text-center font-serif text-2xl text-brand-dark mb-8">Galería</h3>
+                        <div class="flex flex-wrap justify-center gap-4 md:gap-6">
+                            ${images}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = backBtn + specHtml + extrasHtml;
+            lucide.createIcons();
+        }
+
+        // --- Utils ---
+        function handleImageError(img) {
+            const src = img.src;
+            if (src.includes('.jpg') && !src.includes('tried_png')) {
+                img.src = src.replace('.jpg', '.png') + "?tried_png=true";
+                return;
+            }
+        }
+
+        // --- INICIALIZACIÓN DE THREE.JS CON MODELO GLB Y ORBIT CONTROLS ---
+        const initThree = () => {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            
+            // Cámara
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 0, 8); // Posición inicial
+            
+            // Renderizador
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio); // Mejor calidad en móviles
+            container.appendChild(renderer.domElement);
+            
+            // Luces
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 2);
+            dirLight.position.set(5, 5, 5);
+            scene.add(dirLight);
+
+            const dirLight2 = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight2.position.set(-5, 0, 5);
+            scene.add(dirLight2);
+
+            // Controles de Órbita (Permite girar el modelo)
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Movimiento suave
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false; // Desactivar zoom para no interrumpir el scroll
+            controls.enablePan = false;  // Desactivar movimiento lateral
+            controls.autoRotate = true; // Rotación automática si no se toca
+            controls.autoRotateSpeed = 2.0; // Velocidad de rotación automática
+
+            // Cargar modelo GLB
+            const loader = new THREE.GLTFLoader();
+            const modelUrl = 'https://raw.githubusercontent.com/instructorandradedcc/arcillasygredasdecolombia/main/golden%20logo%20arcillas.glb'; // Enlace RAW corregido
+            
+            let modelMesh;
+
+            loader.load(modelUrl, (gltf) => {
+                modelMesh = gltf.scene;
+                
+                // Ajustar posición y escala
+                modelMesh.scale.set(3.5, 3.5, 3.5); // Escala ajustada para que sea visible pero no invasiva
+                modelMesh.position.set(3, -0.5, 0); // Posicionado a la derecha (donde estaba la imagen)
+
+                scene.add(modelMesh);
+                adjustPosition(modelMesh);
+                
+            }, undefined, function(error) {
+                console.error("Error cargando el modelo 3D:", error);
+            });
+
+            // Loop de animación
+            const animate = () => {
+                requestAnimationFrame(animate);
+                controls.update(); // Necesario para damping y auto-rotación
+                renderer.render(scene, camera);
+            };
+            animate();
+
+            // Ajuste Responsivo
+            function adjustPosition(mesh) {
+                if(!mesh) return;
+                
+                if(window.innerWidth < 768) {
+                    // MÓVIL: Hacemos visible el modelo y lo movemos arriba
+                    mesh.visible = true; 
+                    mesh.scale.set(2.2, 2.2, 2.2); // Más pequeño para que quepa
+                    mesh.position.set(0, 1.2, 0); // Arriba, sobre el texto
+                } else {
+                    // ESCRITORIO
+                    mesh.visible = true;
+                    mesh.scale.set(3.5, 3.5, 3.5);
+                    mesh.position.set(3.5, 0, 0); 
+                }
+            }
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                if(modelMesh) adjustPosition(modelMesh);
+            });
+            
+            // Ajuste inicial por si carga en móvil
+            adjustPosition(modelMesh);
+        };
+        
+        document.addEventListener('DOMContentLoaded', initThree);
+    </script>
+</body>
+</html>
+
