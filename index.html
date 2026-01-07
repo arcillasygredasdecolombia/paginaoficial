@@ -131,35 +131,6 @@
         }
         .nav-link:hover, .nav-link.active { color: #A16E53; }
 
-        /* Submenu Sticky Style */
-        .submenu-sticky {
-            position: sticky;
-            top: 80px; /* Altura del navbar */
-            z-index: 40;
-            background: rgba(255, 255, 255, 0.98);
-            border-bottom: 1px solid #e5e7eb;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 1rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .submenu-item {
-            display: inline-block;
-            padding: 0.5rem 1.5rem;
-            color: #5D4037;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 99px;
-            transition: all 0.2s;
-            margin: 0 0.25rem;
-        }
-        .submenu-item:hover, .submenu-item.active {
-            background-color: #A16E53;
-            color: white;
-        }
-
         /* Floating WhatsApp Button */
         .floating-whatsapp {
             position: fixed;
@@ -852,6 +823,8 @@
         const IMG_BASE = "https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/";
 
         function buildImgUrl(filename) {
+            // AJUSTE: Permitir URLs completas (como las de GitHub)
+            if (filename.startsWith('http')) return filename;
             if (filename.includes('.')) return IMG_BASE + filename;
             return IMG_BASE + filename + ".jpg";
         }
@@ -1133,7 +1106,7 @@
                                         <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
                                             <div class="h-64 flex relative">
                                                 <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('archilla-piel-lista-con-flores-uva-.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                    <img src="${buildImgUrl('arcilla-piel-lista-con-flores-uva-.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
                                                 </div>
                                                 <div class="w-1/2 h-full overflow-hidden">
                                                     <img src="${buildImgUrl('arcilla-piel-lista-uva.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
@@ -1143,19 +1116,22 @@
                                                 </div>
                                             </div>
                                             <div class="p-8 text-center relative">
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Uva</h4>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Regenera la elastina, antioxidante, exfolia e ilumina.
-                                                </p>
+                                                <div class="inline-block p-2 rounded-full bg-purple-50 mb-3 text-purple-700">
+                                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Uva</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Antioxidante</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Regenera la elastina e ilumina. Potente efecto anti-edad.</p>
                                             </div>
                                         </div>
 
-                                        <!-- Card: Arcilla Azul (ACTUALIZADA LA PRIMERA IMAGEN) -->
+                                        <!-- Card: Arcilla Azul (IMAGEN IZQUIERDA CORREGIDA CON VERIFICACIÓN) -->
                                         <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
                                             <div class="h-64 flex relative">
                                                 <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/archilla-piel-lista-con-flores-azul.jpg" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
+                                                    <!-- Se añade ?v=new para forzar que el navegador cargue la nueva imagen y no la caché -->
+                                                    <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/archilla-piel-lista-con-flores-azul.jpg?v=new" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
                                                 </div>
                                                 <div class="w-1/2 h-full overflow-hidden">
                                                     <img src="${buildImgUrl('arcilla-piel-lista-azul.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
@@ -1165,11 +1141,13 @@
                                                 </div>
                                             </div>
                                             <div class="p-8 text-center relative">
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-2">Arcilla Azul</h4>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Específica para reducir la seborrea y controlar el exceso de grasa facial y capilar.
-                                                </p>
+                                                <div class="inline-block p-2 rounded-full bg-blue-50 mb-3 text-blue-700">
+                                                    <i data-lucide="wind" class="w-5 h-5"></i>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Azul</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Control Graso</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Específica para reducir la seborrea y controlar el exceso de grasa facial y capilar.</p>
                                             </div>
                                         </div>
 
@@ -1368,150 +1346,130 @@
                                 <div class="w-full h-px bg-gray-200 my-16"></div>
 
                                 <!-- Sección: Nuestra Colección de Tierras -->
-                                <!-- TODAS LAS TARJETAS AHORA SIGUEN LA ESTRUCTURA DE ARCILLA BLANCA (SPLIT) PARA UNIFICAR DISEÑO MÓVIL -->
+                                <!-- NUEVO DISEÑO DE GALERÍA DE ARTE CENTRADA -->
                                 <div>
                                     <div class="text-center mb-16">
                                         <span class="text-brand-clay uppercase tracking-[0.3em] text-xs font-bold block mb-2">Variedad Exclusiva</span>
                                         <h3 class="font-serif text-4xl text-brand-dark italic">Nuestra Colección de Tierras</h3>
                                     </div>
                                     
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                                         
                                         <!-- Card: Arcilla Blanca -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-blanca.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Suavidad Pura</span>
-                                                </div>
-                                            </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-gray-200 border border-gray-300"></div>
-                                                </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Blanca</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Caolín Puro</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Muy suave, ideal para pieles sensibles y apagadas. Descongestiona, calma y restaura la luz natural.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Card: Arcilla Verde (Actualizado a estructura Split) -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-verde.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Detox Profundo</span>
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-blanca.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Blanca" onerror="handleImageError(this)">
+                                                <!-- Overlay elegante -->
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
+                                                <div class="absolute bottom-4 left-0 right-0 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0">
+                                                    <span class="bg-white/90 backdrop-blur-sm text-brand-dark px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm">Ver Detalle</span>
                                                 </div>
                                             </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-green-700"></div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-gray-100 mb-3 text-brand-clay">
+                                                    <i data-lucide="feather" class="w-5 h-5"></i>
                                                 </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Verde</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Limpieza Total</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Potente seborreguladora y anti-acné. La elección experta para pieles grasas y puntos negros.
-                                                </p>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Blanca</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Suavidad Pura</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Ideal para pieles sensibles y apagadas. Descongestiona y calma.</p>
                                             </div>
                                         </div>
 
-                                        <!-- Card: Arcilla Roja (Actualizado a estructura Split) -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-roja.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Vitalidad</span>
-                                                </div>
+                                        <!-- Card: Arcilla Verde -->
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-verde.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Verde" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
                                             </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-red-700"></div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-green-50 mb-3 text-green-700">
+                                                    <i data-lucide="droplet" class="w-5 h-5"></i>
                                                 </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Roja</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Estimulante</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Estimula la circulación y tonifica. Perfecta para pieles maduras, cansadas o tratamientos corporales.
-                                                </p>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Verde</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Limpieza Total</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Potente seborreguladora y anti-acné. Para pieles grasas.</p>
                                             </div>
                                         </div>
 
-                                        <!-- Card: Arcilla Amarilla (Actualizado a estructura Split) -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-amarilla-.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Luminosidad</span>
-                                                </div>
+                                        <!-- Card: Arcilla Roja -->
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-roja.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Roja" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
                                             </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-red-50 mb-3 text-red-700">
+                                                    <i data-lucide="heart-pulse" class="w-5 h-5"></i>
                                                 </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Amarilla</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Energía</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Revitalizante y mejoradora de elasticidad. Un toque de energía suave apto para pieles sensibles.
-                                                </p>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Roja</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Estimulante</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Tonifica y mejora la circulación. Perfecta para pieles maduras.</p>
                                             </div>
                                         </div>
 
-                                        <!-- Card: Arcilla Uva (Actualizado a estructura Split) -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-uva.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Anti-Edad</span>
-                                                </div>
+                                        <!-- Card: Arcilla Amarilla -->
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-amarilla-.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Amarilla" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
                                             </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-purple-700"></div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-yellow-50 mb-3 text-yellow-700">
+                                                    <i data-lucide="sun" class="w-5 h-5"></i>
                                                 </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Uva</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Antioxidante</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Regenera la elastina y exfolia suavemente. Potente antioxidante que ilumina y rejuvenece.
-                                                </p>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Amarilla</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Energía</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Revitalizante y mejoradora de elasticidad para pieles sensibles.</p>
                                             </div>
                                         </div>
 
-                                        <!-- Card: Arcilla Azul (Actualizado a estructura Split) -->
-                                        <div class="group bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-                                            <div class="h-64 flex relative">
-                                                <div class="w-1/2 h-full overflow-hidden">
-                                                    <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-azul.jpg')}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="handleImageError(this)">
-                                                </div>
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                                                    <span class="text-white font-serif text-lg italic">Equilibrio</span>
-                                                </div>
+                                        <!-- Card: Arcilla Uva -->
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-uva.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Uva" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
                                             </div>
-                                            <div class="p-8 text-center relative">
-                                                <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-white rounded-full border-4 border-white flex items-center justify-center shadow-md">
-                                                    <div class="w-4 h-4 rounded-full bg-blue-700"></div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-purple-50 mb-3 text-purple-700">
+                                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
                                                 </div>
-                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-3 mt-4">Arcilla Azul</h4>
-                                                <span class="text-xs uppercase tracking-widest text-brand-clay block mb-4">Control Graso</span>
-                                                <div class="w-8 h-px bg-brand-gold mx-auto mb-4"></div>
-                                                <p class="text-sm text-gray-600 leading-relaxed font-light">
-                                                    Específica para reducir la seborrea y controlar el exceso de grasa facial y capilar.
-                                                </p>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Uva</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Antioxidante</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Regenera la elastina e ilumina. Potente efecto anti-edad.</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card: Arcilla Azul -->
+                                        <div class="group bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                                            <div class="relative h-72 bg-gray-50 overflow-hidden">
+                                                <img src="${buildImgUrl('arcilla-piel-frascos-3-prestaciones-azul.jpg')}" 
+                                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                                                     alt="Arcilla Azul" onerror="handleImageError(this)">
+                                                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-500"></div>
+                                            </div>
+                                            <div class="p-6 text-center">
+                                                <div class="inline-block p-2 rounded-full bg-blue-50 mb-3 text-blue-700">
+                                                    <i data-lucide="wind" class="w-5 h-5"></i>
+                                                </div>
+                                                <h4 class="font-serif text-2xl font-bold text-brand-dark mb-1">Arcilla Azul</h4>
+                                                <p class="text-xs text-brand-gold font-bold uppercase tracking-widest mb-4">Control Graso</p>
+                                                <div class="w-8 h-px bg-gray-200 mx-auto mb-4"></div>
+                                                <p class="text-gray-600 text-sm font-light leading-relaxed">Reduce la seborrea facial y capilar. Equilibrio total.</p>
                                             </div>
                                         </div>
 
@@ -1562,6 +1520,7 @@
                             { src: "arcillas-moldeables-o-plastilinas-en-fila-todos-los-colores.jpg", desc: "Variedad de Colores" },
                             { src: "arcilla-moldeable-o-plastilina-modelos-1.png", desc: "Figuras Creativas" },
                             { src: "arcilla-moldeable-o-plastilina-modelos-2.png", desc: "Esculturas" },
+                            // AJUSTE: URL convertida a 'raw' para visualización directa
                             { src: "https://raw.githubusercontent.com/arcillasygredasdecolombia/paginaoficial/main/arcilla%20mardeable.jpeg", desc: "Presentación 1kg y 1lb" }
                         ]
                     },
