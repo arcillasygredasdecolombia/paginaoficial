@@ -1789,7 +1789,9 @@
                         },
                         gallery: [
                             { src: "mini-casa-de-ladrillo.png", desc: "Proyectos" },
-                            { src: "mini-molino-de-ladrillo.png", desc: "Construcciones" }
+                            { src: "mini-molino-de-ladrillo.png", desc: "Construcciones" },
+                            // AJUSTE: Se agregó la propiedad fit: 'contain' para que la imagen se vea completa
+                            { src: "https://raw.githubusercontent.com/arcillasygredasdecolombia/paginaoficial/main/presentacion%20ladrillos.png", desc: "Presentación y Empaque", fit: "contain" }
                         ]
                     }
                 ]
@@ -1917,17 +1919,21 @@
 
             // Galería Simple - AÑADIDO MARCO DE GALERÍA (gallery-gold-frame)
             if(product.gallery && product.gallery.length > 0) {
-                const images = product.gallery.map(img => `
+                const images = product.gallery.map(img => {
+                    // LÓGICA DE AJUSTE: Si la imagen tiene la propiedad fit: 'contain', cambiamos la clase CSS
+                    const fitClass = img.fit === 'contain' ? 'object-contain p-1' : 'object-cover';
+                    
+                    return `
                     <div class="gallery-gold-frame group relative w-[45%] md:w-[22%] aspect-square rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                         <div class="w-full h-full overflow-hidden relative">
-                            <img src="${buildImgUrl(img.src)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" onerror="handleImageError(this)">
+                            <img src="${buildImgUrl(img.src)}" class="w-full h-full ${fitClass} transition-transform duration-500 group-hover:scale-110" onerror="handleImageError(this)">
                             ${img.desc ? `
                             <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <p class="text-white text-xs font-bold">${img.desc}</p>
                             </div>` : ''}
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
 
                 extrasHtml += `
                     <div class="mt-12 animate-fade-in">
