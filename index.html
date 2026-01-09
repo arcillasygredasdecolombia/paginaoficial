@@ -579,24 +579,33 @@
                 <p class="text-gray-500 text-sm">Selecciona una línea para explorar.</p>
             </div>
 
+         <!-- 2. CATÁLOGO PRINCIPAL (LANDING DE PRODUCTOS) - AHORA CON BORDE DORADO -->
+    <section id="page-products" class="page-section content-layer bg-white/80">
+        <div class="max-w-7xl mx-auto px-6 pb-20 pointer-events-auto">
+            <div class="text-center mb-16 pt-10">
+                <h2 class="font-serif text-4xl text-brand-dark mb-2">Nuestras Categorías</h2>
+                <div class="w-16 h-px bg-brand-clay mx-auto mb-4"></div>
+                <p class="text-gray-500 text-sm">Selecciona una línea para explorar.</p>
+            </div>
+
             <!-- GRID ACTUALIZADO A 2 COLUMNAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                <!-- Card Belleza (Abre menú de categoría) - AÑADIDA CLASE gold-border-card -->
+                <!-- Card Belleza (Abre menú de categoría) -->
                 <div onclick="showSubCategory('belleza')" class="product-card gold-border-card group relative h-[450px] cursor-pointer overflow-hidden">
-        
-        <img src="https://raw.githubusercontent.com/arcillasygredasdecolombia/paginaoficial/main/imagen%20catgoria%20arcilla%20salud%20y%20belleza.jpeg" 
-             class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
-             alt="Belleza y Salud">
-        
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-        
-        <div class="absolute bottom-0 left-0 p-8 w-full text-center">
-            <h3 class="text-3xl font-serif text-white mb-2">Belleza y Salud</h3>
-            <p class="text-gray-300 text-xs mb-4">Mascarillas de Arcillas</p>
-            <span class="text-brand-gold text-xs uppercase font-bold border-b border-brand-gold pb-1">Ver Variedades</span>
-        </div>
+                    <img src="https://raw.githubusercontent.com/arcillasygredasdecolombia/paginaoficial/main/imagen%20catgoria%20arcilla%20salud%20y%20belleza.jpeg" 
+                         class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90" 
+                         alt="Belleza y Salud">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                    
+                    <div class="absolute bottom-0 left-0 p-8 w-full text-center">
+                        <h3 class="text-3xl font-serif text-white mb-2">Belleza y Salud</h3>
+                        <p class="text-gray-300 text-xs mb-4">Mascarillas de Arcillas</p>
+                        <span class="text-brand-gold text-xs uppercase font-bold border-b border-brand-gold pb-1">Ver Variedades</span>
+                    </div>
+                </div>
 
-                <!-- Card Arte y Escolar (Actualizado) - AÑADIDA CLASE gold-border-card -->
+                <!-- Card Arte y Escolar -->
                 <div onclick="showSubCategory('arte')" class="product-card gold-border-card group relative h-[450px] cursor-pointer">
                     <img src="https://arcillasygredasdecolombia.wordpress.com/wp-content/uploads/2025/12/arcillas-y-arenas-de-colores-y-plastilinas.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90" alt="Arte">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
@@ -2059,6 +2068,7 @@
     </script>
 </body>
 </html>
+
 
 
 
